@@ -58,6 +58,9 @@ dependencies:
   share_plus: ^10.1.4
   pusher_channels_flutter: ^2.5.0
   open_file: ^3.5.10
+  local_auth: ^2.2.0
+  google_sign_in: ^6.2.1
+  google_maps_flutter: ^2.6.0
   rename: ^3.1.0
 dev_dependencies:
   flutter_test:
@@ -67,6 +70,8 @@ dev_dependencies:
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.1
   analyzer: ^6.4.1
+
+  flutter_launcher_icons: ^0.13.1
 
 # dependency_overrides:
 #   # TODO: Recheck once flutter_inappwebview version >6.0.0 is released

@@ -83,11 +83,50 @@ class _ConfirmOTPLayoutState extends ConsumerState<ConfirmOTPLayout> {
       setState(() {
         isComplete = true;
       });
+      // Optionally auto-submit OTP
+      // _onConfirmOTP();
     } else {
       setState(() {
         isComplete = false;
       });
     }
+  }
+
+  Future<void> _onConfirmOTP() async {
+    if (!isComplete) return;
+    setState(() { isComplete = false; });
+    final response = await ref.read(authControllerProvider.notifier).verifyOTP(
+      phone: widget.arguments.phoneNumber,
+      otp: pinCodeController.text,
+    );
+    if (response.isSuccess) {
+      if (widget.arguments.isPasswordRecover) {
+        context.nav.pushNamed(
+          Routes.createPassword,
+          arguments: response.data.toString(),
+        );
+      } else if (widget.arguments.isFromCheckoutScreen == true) {
+        ref.read(isProfileVefifySuccess.notifier).state = true;
+        ref.refresh(profileInfoControllerProvider);
+        Future.delayed(const Duration(milliseconds: 200), () {
+          context.nav.pop();
+        });
+      } else {
+        context.nav.pushNamed(
+          Routes.getCoreRouteName(AppConstants.appServiceName),
+        );
+      }
+      GlobalFunction.showCustomSnackbar(
+        message: response.message,
+        isSuccess: response.isSuccess,
+      );
+    } else {
+      GlobalFunction.showCustomSnackbar(
+        message: response.message,
+        isSuccess: false,
+      );
+    }
+    setState(() { isComplete = true; });
   }
 
   @override
@@ -166,11 +205,9 @@ class _ConfirmOTPLayoutState extends ConsumerState<ConfirmOTPLayout> {
                   ),
                   Gap(30.h),
                   AbsorbPointer(
-                    absorbing: !isComplete,
+                    absorbing: !isComplete || ref.watch(authControllerProvider),
                     child: ref.watch(authControllerProvider)
-                        ? const Center(
-                            child: CircularProgressIndicator(),
-                          )
+                        ? const Center(child: CircularProgressIndicator())
                         : CustomButton(
                             buttonText: S.of(context).confirmOtp,
                             buttonColor: isComplete
@@ -179,49 +216,7 @@ class _ConfirmOTPLayoutState extends ConsumerState<ConfirmOTPLayout> {
                                     begin: colors(context).primaryColor,
                                     end: colors(context).light,
                                   ).lerp(0.5),
-                            onPressed: () {
-                              ref
-                                  .read(authControllerProvider.notifier)
-                                  .verifyOTP(
-                                    phone: widget.arguments.phoneNumber,
-                                    otp: pinCodeController.text,
-                                  )
-                                  .then((response) {
-                                if (response.isSuccess) {
-                                  if (widget.arguments.isPasswordRecover) {
-                                    context.nav.pushNamed(
-                                      Routes.createPassword,
-                                      arguments: response.data.toString(),
-                                    );
-                                  } else if (widget
-                                          .arguments.isFromCheckoutScreen ==
-                                      true) {
-                                    ref
-                                        .read(isProfileVefifySuccess.notifier)
-                                        .state = true;
-                                    ref.refresh(profileInfoControllerProvider);
-                                    Future.delayed(Duration(milliseconds: 200),
-                                        () {
-                                      // pinCodeController.dispose();
-
-                                      context.nav.pop();
-                                    });
-                                  } else {
-                                    context.nav.pushNamed(
-                                      Routes.getCoreRouteName(
-                                          AppConstants.appServiceName),
-                                    );
-                                  }
-
-                                  GlobalFunction.showCustomSnackbar(
-                                    message: response.message,
-                                    isSuccess: response.isSuccess,
-                                  );
-                                }
-                              });
-
-                              debugPrint('Done');
-                            },
+                            onPressed: _onConfirmOTP,
                           ),
                   ),
                   Gap(30.h),

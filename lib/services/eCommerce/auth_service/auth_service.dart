@@ -12,6 +12,37 @@ import 'package:ready_ecommerce/utils/api_client.dart';
 final authServiceProvider = Provider((ref) => AuthService(ref));
 
 class AuthService implements AuthProviderBase {
+  // Google login
+  Future<Response> loginWithGoogle({required String idToken}) async {
+    final response = await Dio().post(
+      AppConstants.googleLogin,
+      data: {
+        'id_token': idToken,
+      },
+    );
+    return response;
+  }
+
+  // Driver location update (for driver app)
+  Future<Response> updateDriverLocation({required int driverId, required double lat, required double lng}) async {
+    final response = await Dio().post(
+      AppConstants.driverLocationPost,
+      data: {
+        'driver_id': driverId,
+        'lat': lat,
+        'lng': lng,
+      },
+    );
+    return response;
+  }
+
+  // Get driver location (for customer app)
+  Future<Response> getDriverLocation({required int driverId}) async {
+    final response = await Dio().get(
+      '${AppConstants.driverLocationGet}/$driverId',
+    );
+    return response;
+  }
   final Ref ref;
   AuthService(this.ref);
   @override
@@ -33,11 +64,11 @@ class AuthService implements AuthProviderBase {
   @override
   Future<Response> sendOTP(
       {required String phone, required bool isForgot}) async {
-    final response = await ref.read(apiClientProvider).post(
+    // Only phone is required for new endpoint
+    final response = await Dio().post(
       AppConstants.sendOTP,
       data: {
         "phone": phone,
-        "forgot_password ": isForgot == true ? 1 : 0,
       },
     );
     return response;
@@ -62,7 +93,7 @@ class AuthService implements AuthProviderBase {
   @override
   Future<Response> verifyOTP(
       {required String phone, required String otp}) async {
-    final response = await ref.read(apiClientProvider).post(
+    final response = await Dio().post(
       AppConstants.verifyOtp,
       data: {
         "phone": phone,

@@ -1,6 +1,6 @@
 class AppConstants {
 // Codecanyon
-  static const String baseUrl = 'https://demo.readyecommerce.app/api';
+  static const String baseUrl = 'https://totalhealthherbalist.com/api';
   // QA Testing
   //static const String baseUrl = 'https://uat.readyecommerce.app/api';
   // static const String baseUrl = 'http://chat.razinsoft.site/api';
@@ -9,8 +9,11 @@ class AppConstants {
   static const String settings = '$baseUrl/master';
   static const String loginUrl = '$baseUrl/login';
   static const String registrationUrl = '$baseUrl/registration';
-  static const String sendOTP = '$baseUrl/send-otp';
-  static const String verifyOtp = '$baseUrl/verify-otp';
+  static const String sendOTP = '$baseUrl/auth/otp/send';
+  static const String verifyOtp = '$baseUrl/auth/otp/verify';
+  static const String googleLogin = '$baseUrl/auth/google';
+  static const String driverLocationPost = '$baseUrl/driver/location';
+  static const String driverLocationGet = '$baseUrl/driver/location';
   static const String resetPassword = '$baseUrl/reset-password';
   static const String changePassword = '$baseUrl/change-password';
   static const String updateProfile = '$baseUrl/update-profile';

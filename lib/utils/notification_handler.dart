@@ -52,7 +52,16 @@ Future<void> setupFlutterNotifications() async {
 
   const InitializationSettings initializationSettings = InitializationSettings(
     android: AndroidInitializationSettings('@drawable/notification_icon'),
-    iOS: DarwinInitializationSettings(),
+    iOS: DarwinInitializationSettings(
+      notificationCategories: [],
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
+      // Set the notification icon asset for iOS
+      attachments: [
+        DarwinNotificationAttachment('NotificationIcon'),
+      ],
+    ),
   );
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,

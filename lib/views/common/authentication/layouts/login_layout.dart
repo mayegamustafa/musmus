@@ -27,6 +27,87 @@ class LoginLayout extends StatefulWidget {
 }
 
 class _LoginLayoutState extends State<LoginLayout> {
+  // Import for google_sign_in
+  import 'package:google_sign_in/google_sign_in.dart';
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
+  Future<void> _handleGoogleSignIn(BuildContext context, WidgetRef ref) async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        // User cancelled
+        return;
+      }
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? idToken = googleAuth.idToken;
+      if (idToken == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Google sign-in failed: No ID token.')),
+        );
+        return;
+      }
+      // Call backend for Google login
+      final response = await ref.read(authServiceProvider).loginWithGoogle(idToken: idToken);
+      if (response.statusCode == 200 && response.data['token'] != null) {
+        // Save token and user info as needed
+        ref.read(hiveServiceProvider).saveUserAuthToken(authToken: response.data['token']);
+        // Optionally parse user info if returned
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Google login successful!')),
+        );
+        context.nav.pushNamed(Routes.getCoreRouteName(AppConstants.appServiceName));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Google login failed: ${response.data['message'] ?? 'Unknown error'}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Google sign-in error: $e')),
+      );
+    }
+  }
+  // Import for local_auth
+  import 'package:local_auth/local_auth.dart';
+  final LocalAuthentication auth = LocalAuthentication();
+
+  Future<void> _authenticateWithBiometrics(BuildContext context, WidgetRef ref) async {
+    try {
+      bool canCheckBiometrics = await auth.canCheckBiometrics;
+      bool isAuthenticated = false;
+      if (canCheckBiometrics) {
+        isAuthenticated = await auth.authenticate(
+          localizedReason: 'Authenticate to login',
+          options: const AuthenticationOptions(biometricOnly: true),
+        );
+      }
+      if (isAuthenticated) {
+        // Optionally, you can retrieve saved credentials securely
+        // For now, just trigger login with current fields
+        if (formKey.currentState!.validate()) {
+          ref.read(authControllerProvider.notifier)
+              .login(
+                phone: phoneController.text,
+                password: passwordController.text,
+              )
+              .then((response) {
+            ref.read(addressControllerProvider.notifier).getAddress();
+            if (response.isSuccess) {
+              context.nav.pushNamed(Routes.getCoreRouteName(AppConstants.appServiceName));
+            }
+          });
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Biometric authentication failed.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Biometric error: \\${e.toString()}')),
+      );
+    }
+  }
   final TextEditingController phoneController = TextEditingController();
 
   final TextEditingController passwordController = TextEditingController();
@@ -181,6 +262,37 @@ class _LoginLayoutState extends State<LoginLayout> {
                 value: value!,
                 hintText: S.of(context).password,
                 context: context,
+              ),
+            );
+          }),
+          Gap(10.h),
+          // Biometric login button
+          Consumer(builder: (context, ref, _) {
+            return Center(
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.fingerprint),
+                label: const Text('Login with Biometrics'),
+                onPressed: () => _authenticateWithBiometrics(context, ref),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colors(context).primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            );
+          }),
+          Gap(10.h),
+          // Google login button
+          Consumer(builder: (context, ref, _) {
+            return Center(
+              child: ElevatedButton.icon(
+                icon: Image.asset('assets/png/google.png', height: 24),
+                label: const Text('Login with Google'),
+                onPressed: () => _handleGoogleSignIn(context, ref),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                  side: const BorderSide(color: Colors.grey),
+                ),
               ),
             );
           }),

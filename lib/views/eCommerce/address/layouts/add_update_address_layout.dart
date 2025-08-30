@@ -30,6 +30,49 @@ class AddUpdateAddressLayout extends ConsumerStatefulWidget {
 }
 
 class _AddUpdateAddressLayoutState
+  // Import geolocator and geocoding
+  import 'package:geolocator/geolocator.dart';
+  import 'package:geocoding/geocoding.dart' as geocoding;
+
+  Future<void> _fillAddressFromGPS(BuildContext context) async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permission denied.')),
+          );
+          return;
+        }
+      }
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Location permission permanently denied. Please enable it in settings.')),
+        );
+        return;
+      }
+      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final placemarks = await geocoding.placemarkFromCoordinates(position.latitude, position.longitude);
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        setState(() {
+          areaController.text = place.subLocality ?? '';
+          flatNumController.text = place.subThoroughfare ?? '';
+          postalCodeController.text = place.postalCode ?? '';
+          addressLine1Controller.text = place.street ?? '';
+          addressLine2Controller.text = place.locality ?? '';
+        });
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Address auto-filled from GPS.')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to get location: $e')),
+      );
+    }
+  }
     extends ConsumerState<AddUpdateAddressLayout> {
   final GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
 
@@ -120,14 +163,28 @@ class _AddUpdateAddressLayoutState
             child: SingleChildScrollView(
               child: AnimationLimiter(
                 child: Column(
-                  children: AnimationConfiguration.toStaggeredList(
-                    duration: const Duration(milliseconds: 375),
-                    childAnimationBuilder: (widget) => SlideAnimation(
-                        horizontalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: widget,
-                        )),
-                    children: [
+                  children: [
+                    // GPS Auto-fill button
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.my_location),
+                        label: const Text('Auto-fill from GPS'),
+                        onPressed: () => _fillAddressFromGPS(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colors(context).primaryColor,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                    ...AnimationConfiguration.toStaggeredList(
+                      duration: const Duration(milliseconds: 375),
+                      childAnimationBuilder: (widget) => SlideAnimation(
+                          horizontalOffset: 50.0,
+                          child: FadeInAnimation(
+                            child: widget,
+                          )),
+                      children: [
                       SizedBox(height: 10.h),
                       CustomTextFormField(
                         name: S.of(context).name,

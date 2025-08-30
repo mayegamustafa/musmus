@@ -45,13 +45,57 @@ class OrderDetailsLayout extends ConsumerStatefulWidget {
 }
 
 class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
+  Future<void> _openDeliveryTracking(BuildContext context, int driverId, double customerLat, double customerLng, {
+    String? driverName,
+    String? driverPhotoUrl,
+    String? driverVehicle,
+    String? eta,
+  }) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(child: CircularProgressIndicator()),
+    );
+    try {
+      final response = await ref.read(authServiceProvider).getDriverLocation(driverId: driverId);
+      Navigator.of(context).pop();
+      if (response.statusCode == 200 && response.data['lat'] != null && response.data['lng'] != null) {
+        final double deliveryLat = (response.data['lat'] as num).toDouble();
+        final double deliveryLng = (response.data['lng'] as num).toDouble();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => DeliveryTrackingMapScreen(
+              driverId: driverId,
+              initialDeliveryLat: deliveryLat,
+              initialDeliveryLng: deliveryLng,
+              customerLat: customerLat,
+              customerLng: customerLng,
+              driverName: driverName,
+              driverPhotoUrl: driverPhotoUrl,
+              driverVehicle: driverVehicle,
+              eta: eta,
+            ),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response.data['message'] ?? 'Could not fetch driver location.')),
+        );
+      }
+    } catch (e) {
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error fetching driver location: $e')),
+      );
+    }
+  }
   bool isConfirmLoading = false;
   PaymentType selectedPaymentType = PaymentType.none;
   @override
   Widget build(
     BuildContext context,
   ) {
-    return Scaffold(
+  return Scaffold(
       backgroundColor: colors(context).accentColor,
       appBar: AppBar(
         title: Text(S.of(context).orderDetails),
@@ -82,9 +126,43 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
           final asyncValue =
               ref.watch(orderDetailsControllerProvider(widget.orderId));
           return asyncValue.when(
-            data: (orderDetails) => SingleChildScrollView(
-              child: Column(
-                children: [
+            data: (orderDetails) {
+              final order = orderDetails.data.order;
+              final int? driverId = order.toJson()['driver_id'] as int?;
+              final double customerLat = double.tryParse(order.address.latitude ?? '') ?? 0.0;
+              final double customerLng = double.tryParse(order.address.longitude ?? '') ?? 0.0;
+              final String? driverName = order.toJson()['driver_name'] as String?;
+              final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
+              final String? driverVehicle = order.toJson()['driver_vehicle'] as String?;
+              final String? eta = order.toJson()['eta'] as String?;
+              return SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.delivery_dining),
+                        label: const Text('Track Delivery'),
+                        onPressed: driverId != null
+                            ? () => _openDeliveryTracking(
+                                  context,
+                                  driverId,
+                                  customerLat,
+                                  customerLng,
+                                  driverName: driverName,
+                                  driverPhotoUrl: driverPhotoUrl,
+                                  driverVehicle: driverVehicle,
+                                  eta: eta,
+                                )
+                            : () => ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Driver not assigned yet. Please check back later.')),
+                                ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colors(context).primaryColor,
+                          foregroundColor: Colors.white,
+                        ),
+                      ),
+                    ),
                   Gap(8.h),
                   _buildServiceItemsWidget(
                     context,
