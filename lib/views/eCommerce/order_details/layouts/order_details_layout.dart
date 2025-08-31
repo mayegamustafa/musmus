@@ -97,36 +97,35 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
   Widget build(
     BuildContext context,
   ) {
-  return Scaffold(
+    return Scaffold(
       backgroundColor: colors(context).accentColor,
       appBar: AppBar(
         title: Text(S.of(context).orderDetails),
         surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
       ),
-      bottomNavigationBar:
-          ref.watch(orderDetailsControllerProvider(widget.orderId)).when(
-                data: (orderDetails) =>
-                    orderDetails.data.order.orderStatus.toLowerCase() !=
-                                'cancelled' &&
-                            orderDetails.data.order.orderStatus.toLowerCase() !=
-                                'confirm' &&
-                            orderDetails.data.order.orderStatus.toLowerCase() !=
-                                'processing' &&
-                            orderDetails.data.order.orderStatus.toLowerCase() !=
-                                'on the way'
-                        ? _buildBottomNavigationWidget(
-                            context: context,
-                            orderId: orderDetails.data.order.id,
-                            orderStatus: orderDetails.data.order.orderStatus,
-                          )
-                        : null,
-                error: (error, s) => null,
-                loading: () => const SizedBox(),
-              ),
+      bottomNavigationBar: Consumer(
+        builder: (context, ref, _) {
+          final asyncValue = ref.watch(orderDetailsControllerProvider(widget.orderId));
+          return asyncValue.when(
+            data: (orderDetails) =>
+                orderDetails.data.order.orderStatus.toLowerCase() != 'cancelled' &&
+                        orderDetails.data.order.orderStatus.toLowerCase() != 'confirm' &&
+                        orderDetails.data.order.orderStatus.toLowerCase() != 'processing' &&
+                        orderDetails.data.order.orderStatus.toLowerCase() != 'on the way'
+                    ? _buildBottomNavigationWidget(
+                        context: context,
+                        orderId: orderDetails.data.order.id,
+                        orderStatus: orderDetails.data.order.orderStatus,
+                      )
+                    : null,
+            error: (error, s) => null,
+            loading: () => const SizedBox(),
+          );
+        },
+      ),
       body: Consumer(
         builder: (context, ref, _) {
-          final asyncValue =
-              ref.watch(orderDetailsControllerProvider(widget.orderId));
+          final asyncValue = ref.watch(orderDetailsControllerProvider(widget.orderId));
           return asyncValue.when(
             error: (error, stackTrace) => Center(
               child: Text('Error: ${error.toString()}'),
@@ -183,8 +182,7 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                       orderDetails: orderDetails,
                     ),
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                      padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                       child: AddressCard(
                         address: order.address,
                         cardColor: GlobalFunction.getContainerColor(),
@@ -195,10 +193,7 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                     ),
                     Gap(8.h),
                     Visibility(
-                      visible:
-                          order.paymentStatus == 'Pending' &&
-                              order.paymentMethod ==
-                                  'Online Payment',
+                      visible: order.paymentStatus == 'Pending' && order.paymentMethod == 'Online Payment',
                       child: Column(
                         children: [
                           Padding(
@@ -218,9 +213,7 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                                       topRight: Radius.circular(12.r),
                                     ),
                                   ),
-                                  barrierColor: colors(context)
-                                      .accentColor!
-                                      .withOpacity(0.8),
+                                  barrierColor: colors(context).accentColor!.withOpacity(0.8),
                                   context: context,
                                   builder: (context) {
                                     return _buildPaymentBottomSheet();
@@ -237,6 +230,8 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                 ),
               );
             },
+          );
+        },
       ),
     );
   }

@@ -175,192 +175,158 @@ class _AddUpdateAddressLayoutState extends ConsumerState<AddUpdateAddressLayout>
                         ),
                       ),
                     ),
+                    // AnimationConfiguration.toStaggeredList returns a List<Widget>, so we spread it here
                     ...AnimationConfiguration.toStaggeredList(
                       duration: const Duration(milliseconds: 375),
                       childAnimationBuilder: (widget) => SlideAnimation(
-                          horizontalOffset: 50.0,
-                          child: FadeInAnimation(
-                            child: widget,
-                          )),
+                        horizontalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: widget,
+                        ),
+                      ),
                       children: [
-                      SizedBox(height: 10.h),
-                      CustomTextFormField(
-                        name: S.of(context).name,
-                        hintText: S.of(context).name,
-                        textInputType: TextInputType.text,
-                        controller: nameControler,
-                        focusNode: fNodes[0],
-                        textInputAction: TextInputAction.next,
-                        validator: (value) => GlobalFunction.commonValidator(
-                          context: context,
-                          value: value!,
+                        SizedBox(height: 10.h),
+                        CustomTextFormField(
+                          name: S.of(context).name,
                           hintText: S.of(context).name,
+                          textInputType: TextInputType.text,
+                          controller: nameControler,
+                          focusNode: fNodes[0],
+                          textInputAction: TextInputAction.next,
+                          validator: (value) => GlobalFunction.commonValidator(
+                            context: context,
+                            value: value!,
+                            hintText: S.of(context).name,
+                          ),
                         ),
-                      ),
-                      Gap(14.h),
-                      CustomTextFormField(
-                        name: S.of(context).phone,
-                        hintText: S.of(context).phone,
-                        textInputType: TextInputType.number,
-                        controller: phoneNumController,
-                        focusNode: fNodes[1],
-                        textInputAction: TextInputAction.next,
-                        validator: (value) => GlobalFunction.phoneValidator(
-                          isPhoneRequired: isPhoneRequired,
-                          context: context,
-                          value: value!,
+                        Gap(14.h),
+                        CustomTextFormField(
+                          name: S.of(context).phone,
                           hintText: S.of(context).phone,
-                          minLength: phoneMinLength,
-                          maxLength: phoneMaxLength,
+                          textInputType: TextInputType.number,
+                          controller: phoneNumController,
+                          focusNode: fNodes[1],
+                          textInputAction: TextInputAction.next,
+                          validator: (value) => GlobalFunction.phoneValidator(
+                            isPhoneRequired: isPhoneRequired,
+                            context: context,
+                            value: value!,
+                            hintText: S.of(context).phone,
+                            minLength: phoneMinLength,
+                            maxLength: phoneMaxLength,
+                          ),
                         ),
-                      ),
-                      Gap(14.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            flex: 1,
-                            child: CustomTextFormField(
-                              name: S.of(context).area,
-                              hintText: S.of(context).area,
-                              textInputType: TextInputType.text,
-                              controller: areaController,
-                              focusNode: fNodes[2],
-                              textInputAction: TextInputAction.next,
-                              validator: (value) => null,
-                              //     GlobalFunction.commonValidator(
-                              //   context: context,
-                              //   value: value!,
-                              //   hintText: S.of(context).area,
-                              // ),
+                        Gap(14.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              flex: 1,
+                              child: CustomTextFormField(
+                                name: S.of(context).area,
+                                hintText: S.of(context).area,
+                                textInputType: TextInputType.text,
+                                controller: areaController,
+                                focusNode: fNodes[2],
+                                textInputAction: TextInputAction.next,
+                                validator: (value) => null,
+                              ),
                             ),
-                          ),
-                          Gap(5.w),
-                          Flexible(
-                            flex: 1,
-                            child: CustomTextFormField(
-                              name: S.of(context).flat,
-                              hintText: S.of(context).flat,
-                              textInputType: TextInputType.text,
-                              controller: flatNumController,
-                              focusNode: fNodes[3],
-                              textInputAction: TextInputAction.next,
-                              validator: (value) => null,
-                              //     GlobalFunction.commonValidator(
-                              //   context: context,
-                              //   value: value!,
-                              //   hintText: 'A3',
-                              // ),
+                            Gap(5.w),
+                            Flexible(
+                              flex: 1,
+                              child: CustomTextFormField(
+                                name: S.of(context).flat,
+                                hintText: S.of(context).flat,
+                                textInputType: TextInputType.text,
+                                controller: flatNumController,
+                                focusNode: fNodes[3],
+                                textInputAction: TextInputAction.next,
+                                validator: (value) => null,
+                              ),
                             ),
-                          ),
-                          Gap(5.w),
-                          Flexible(
-                            flex: 1,
-                            child: CustomTextFormField(
-                              name: S.of(context).postalCode,
-                              hintText: '1200',
-                              textInputType: TextInputType.text,
-                              controller: postalCodeController,
-                              focusNode: fNodes[4],
-                              textInputAction: TextInputAction.next,
-                              validator: (value) => null,
-                              //     GlobalFunction.commonValidator(
-                              //   context: context,
-                              //   value: value!,
-                              //   hintText: S.of(context).postalCode,
-                              // ),
+                            Gap(5.w),
+                            Flexible(
+                              flex: 1,
+                              child: CustomTextFormField(
+                                name: S.of(context).postalCode,
+                                hintText: '1200',
+                                textInputType: TextInputType.text,
+                                controller: postalCodeController,
+                                focusNode: fNodes[4],
+                                textInputAction: TextInputAction.next,
+                                validator: (value) => null,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Gap(14.h),
-                      CustomTextFormField(
-                        name: S.of(context).addressLine1,
-                        hintText: S.of(context).addressLine1,
-                        textInputType: TextInputType.text,
-                        controller: addressLine1Controller,
-                        focusNode: fNodes[5],
-                        textInputAction: TextInputAction.next,
-                        validator: (value) => GlobalFunction.commonValidator(
-                          context: context,
-                          value: value!,
+                          ],
+                        ),
+                        Gap(14.h),
+                        CustomTextFormField(
+                          name: S.of(context).addressLine1,
                           hintText: S.of(context).addressLine1,
-                        ),
-                      ),
-                      Gap(14.h),
-                      CustomTextFormField(
-                        name: S.of(context).addressLine2,
-                        hintText: S.of(context).addressLine2,
-                        textInputType: TextInputType.text,
-                        controller: addressLine2Controller,
-                        textInputAction: TextInputAction.next,
-                        validator: (value) => null,
-                        // GlobalFunction.commonValidator(
-                        //   context: context,
-                        //   value: value!,
-                        //   hintText: S.of(context).addressLine2,
-                        // ),
-                      ),
-                      Gap(14.h),
-                      buildAddressTag(),
-                      Gap(14.h),
-                      Row(
-                        children: [
-                          Checkbox(
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
-                            activeColor: colors(context).primaryColor,
-                            value: isDefaultAddress,
-                            onChanged: (defult) {
-                              setState(() {
-                                isDefaultAddress = defult!;
-                              });
-                            },
+                          textInputType: TextInputType.text,
+                          controller: addressLine1Controller,
+                          focusNode: fNodes[5],
+                          textInputAction: TextInputAction.next,
+                          validator: (value) => GlobalFunction.commonValidator(
+                            context: context,
+                            value: value!,
+                            hintText: S.of(context).addressLine1,
                           ),
-                          Text(S.of(context).makeItDefault,
-                              style: AppTextStyle(context).bodyTextSmall),
-                          const Spacer(),
-                          widget.address?.addressId != null
-                              ? TextButton(
-                                  onPressed: () {
-                                    ref
-                                        .read(
-                                            addressControllerProvider.notifier)
-                                        .deleteAddress(
-                                          addressId:
-                                              widget.address?.addressId ?? 0,
-                                        )
-                                        .then((response) {
-                                      if (response.isSuccess) {
-                                        GlobalFunction.showCustomSnackbar(
-                                            message: response.message,
-                                            isSuccess: response.isSuccess);
-                                        ref
-                                            .read(addressControllerProvider
-                                                .notifier)
-                                            .getAddress();
-                                        context.nav.pop();
-                                      }
-                                    });
-                                  },
-                                  child: Text(
-                                    S.of(context).deleteThis,
-                                    style: AppTextStyle(context)
-                                        .bodyText
-                                        .copyWith(color: EcommerceAppColor.red),
-                                  ),
-                                )
-                              : const SizedBox()
-                        ],
-                      )
-                    ],
-                  ),
+                        ),
+                        Gap(14.h),
+                        CustomTextFormField(
+                          name: S.of(context).addressLine2,
+                          hintText: S.of(context).addressLine2,
+                          textInputType: TextInputType.text,
+                          controller: addressLine2Controller,
+                          textInputAction: TextInputAction.next,
+                          validator: (value) => null,
+                        ),
+                        Gap(14.h),
+                        buildAddressTag(),
+                        Gap(14.h),
+                        Row(
+                          children: [
+                            Checkbox(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              activeColor: colors(context).primaryColor,
+                              value: isDefaultAddress,
+                              onChanged: (defult) {
+                                setState(() {
+                                  isDefaultAddress = defult!;
+                                });
+                              },
+                            ),
+                            Text(S.of(context).makeItDefault, style: AppTextStyle(context).bodyTextSmall),
+                            const Spacer(),
+                            widget.address?.addressId != null
+                                ? TextButton(
+                                    onPressed: () {
+                                      ref.read(addressControllerProvider.notifier).deleteAddress(
+                                        addressId: widget.address?.addressId ?? 0,
+                                      ).then((response) {
+                                        if (response.isSuccess) {
+                                          GlobalFunction.showCustomSnackbar(
+                                              message: response.message,
+                                              isSuccess: response.isSuccess);
+                                          ref.read(addressControllerProvider.notifier).getAddress();
+                                          context.nav.pop();
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                      S.of(context).deleteThis,
+                                      style: AppTextStyle(context).bodyText.copyWith(color: EcommerceAppColor.red),
+                                    ),
+                                  )
+                                : const SizedBox()
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ),
-          ),
-        ),
-        bottomNavigationBar: SizedBox(
           height: 85.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20),
