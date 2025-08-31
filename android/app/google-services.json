@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "253369840347",
+    "project_id": "ready-ecommerce",
+    "storage_bucket": "ready-ecommerce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253369840347:android:0e6e5572d897b26849d2fe",
+        "android_client_info": {
+          "package_name": "com.readyecommerce"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnwkduK9tqESOOZI_-MemybQ4CEJoimoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
