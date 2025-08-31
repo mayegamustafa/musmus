@@ -18,6 +18,8 @@ import 'package:ready_ecommerce/routes.dart';
 import 'package:ready_ecommerce/services/common/hive_service_provider.dart';
 import 'package:ready_ecommerce/utils/context_less_navigation.dart';
 import 'package:ready_ecommerce/utils/global_function.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:local_auth/local_auth.dart';
 
 class LoginLayout extends StatefulWidget {
   const LoginLayout({super.key});
@@ -27,8 +29,6 @@ class LoginLayout extends StatefulWidget {
 }
 
 class _LoginLayoutState extends State<LoginLayout> {
-  // Import for google_sign_in
-  import 'package:google_sign_in/google_sign_in.dart';
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   Future<void> _handleGoogleSignIn(BuildContext context, WidgetRef ref) async {
@@ -67,8 +67,7 @@ class _LoginLayoutState extends State<LoginLayout> {
       );
     }
   }
-  // Import for local_auth
-  import 'package:local_auth/local_auth.dart';
+  
   final LocalAuthentication auth = LocalAuthentication();
 
   Future<void> _authenticateWithBiometrics(BuildContext context, WidgetRef ref) async {

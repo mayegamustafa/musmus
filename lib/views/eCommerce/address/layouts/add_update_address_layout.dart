@@ -5,6 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:gap/gap.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart' as geocoding;
 import 'package:ready_ecommerce/components/ecommerce/custom_button.dart';
 import 'package:ready_ecommerce/components/ecommerce/custom_text_field.dart';
 import 'package:ready_ecommerce/config/app_color.dart';
@@ -29,10 +31,27 @@ class AddUpdateAddressLayout extends ConsumerStatefulWidget {
       _AddUpdateAddressLayoutState();
 }
 
-class _AddUpdateAddressLayoutState
-  // Import geolocator and geocoding
-  import 'package:geolocator/geolocator.dart';
-  import 'package:geocoding/geocoding.dart' as geocoding;
+class _AddUpdateAddressLayoutState extends ConsumerState<AddUpdateAddressLayout> {
+  final GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
+
+  final TextEditingController nameControler = TextEditingController();
+
+  final TextEditingController phoneNumController = TextEditingController();
+
+  final TextEditingController areaController = TextEditingController();
+
+  final TextEditingController flatNumController = TextEditingController();
+
+  final TextEditingController postalCodeController = TextEditingController();
+
+  final TextEditingController addressLine1Controller = TextEditingController();
+
+  final TextEditingController addressLine2Controller = TextEditingController();
+
+  int activeIndex = 0;
+
+  List<String> addressTags = ['Home', 'Office', 'other'];
+  String addressTag = '';
 
   Future<void> _fillAddressFromGPS(BuildContext context) async {
     try {
@@ -73,27 +92,6 @@ class _AddUpdateAddressLayoutState
       );
     }
   }
-    extends ConsumerState<AddUpdateAddressLayout> {
-  final GlobalKey<FormBuilderState> _formkey = GlobalKey<FormBuilderState>();
-
-  final TextEditingController nameControler = TextEditingController();
-
-  final TextEditingController phoneNumController = TextEditingController();
-
-  final TextEditingController areaController = TextEditingController();
-
-  final TextEditingController flatNumController = TextEditingController();
-
-  final TextEditingController postalCodeController = TextEditingController();
-
-  final TextEditingController addressLine1Controller = TextEditingController();
-
-  final TextEditingController addressLine2Controller = TextEditingController();
-
-  int activeIndex = 0;
-
-  List<String> addressTags = ['Home', 'Office', 'other'];
-  String addressTag = '';
 
   final List<FocusNode> fNodes = [
     FocusNode(),
