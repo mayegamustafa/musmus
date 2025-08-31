@@ -171,73 +171,72 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                         ),
                       ),
                     ),
-                  Gap(8.h),
-                  _buildServiceItemsWidget(
-                    context,
-                    order.products,
-                    order.orderStatus,
-                  ),
-                  Gap(8.h),
-                  _buildShopCardWidget(
-                    context: context,
-                    orderDetails: orderDetails,
-                  ),
-                  Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
-                    child: AddressCard(
-                      address: order.address,
-                      cardColor: GlobalFunction.getContainerColor(),
+                    Gap(8.h),
+                    _buildServiceItemsWidget(
+                      context,
+                      order.products,
+                      order.orderStatus,
                     ),
-                  ),
-                  OrderDetailsCard(
-                    orderDetails: orderDetails,
-                  ),
-                  Gap(8.h),
-                  Visibility(
-                    visible:
-                        order.paymentStatus == 'Pending' &&
-                            order.paymentMethod ==
-                                'Online Payment',
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16.w),
-                          child: CustomTransparentButton(
-                            buttonTextColor: colors(context).primaryColor,
-                            borderColor: colors(context).primaryColor,
-                            buttonText: 'Pay Now',
-                            onTap: () {
-                              showModalBottomSheet(
-                                showDragHandle: true,
-                                isScrollControlled: true,
-                                backgroundColor: EcommerceAppColor.white,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(12.r),
-                                    topRight: Radius.circular(12.r),
+                    Gap(8.h),
+                    _buildShopCardWidget(
+                      context: context,
+                      orderDetails: orderDetails,
+                    ),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
+                      child: AddressCard(
+                        address: order.address,
+                        cardColor: GlobalFunction.getContainerColor(),
+                      ),
+                    ),
+                    OrderDetailsCard(
+                      orderDetails: orderDetails,
+                    ),
+                    Gap(8.h),
+                    Visibility(
+                      visible:
+                          order.paymentStatus == 'Pending' &&
+                              order.paymentMethod ==
+                                  'Online Payment',
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16.w),
+                            child: CustomTransparentButton(
+                              buttonTextColor: colors(context).primaryColor,
+                              borderColor: colors(context).primaryColor,
+                              buttonText: 'Pay Now',
+                              onTap: () {
+                                showModalBottomSheet(
+                                  showDragHandle: true,
+                                  isScrollControlled: true,
+                                  backgroundColor: EcommerceAppColor.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(12.r),
+                                      topRight: Radius.circular(12.r),
+                                    ),
                                   ),
-                                ),
-                                barrierColor: colors(context)
-                                    .accentColor!
-                                    .withOpacity(0.8),
-                                context: context,
-                                builder: (context) {
-                                  return _buildPaymentBottomSheet();
-                                },
-                              );
-                            },
+                                  barrierColor: colors(context)
+                                      .accentColor!
+                                      .withOpacity(0.8),
+                                  context: context,
+                                  builder: (context) {
+                                    return _buildPaymentBottomSheet();
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        Gap(8.h),
-                      ],
+                          Gap(8.h),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
+                  ],
+                ),
+              );
+            },
       ),
     );
   }

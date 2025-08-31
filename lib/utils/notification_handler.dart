@@ -57,10 +57,7 @@ Future<void> setupFlutterNotifications() async {
       defaultPresentAlert: true,
       defaultPresentBadge: true,
       defaultPresentSound: true,
-      // Set the notification icon asset for iOS
-      attachments: [
-        DarwinNotificationAttachment('NotificationIcon'),
-      ],
+      // attachments removed, not supported
     ),
   );
   await flutterLocalNotificationsPlugin.initialize(
