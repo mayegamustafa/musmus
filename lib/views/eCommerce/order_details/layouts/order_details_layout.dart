@@ -132,6 +132,9 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
               final double customerLat = double.tryParse(order.address.latitude ?? '') ?? 0.0;
               final double customerLng = double.tryParse(order.address.longitude ?? '') ?? 0.0;
               final String? driverName = order.toJson()['driver_name'] as String?;
+            error: (error, stackTrace) => Center(
+              child: Text('Error: ${error.toString()}'),
+            ),
               final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
               final String? driverVehicle = order.toJson()['driver_vehicle'] as String?;
               final String? eta = order.toJson()['eta'] as String?;
