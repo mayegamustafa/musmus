@@ -155,14 +155,11 @@ class _AddUpdateAddressLayoutState extends ConsumerState<AddUpdateAddressLayout>
         body: FormBuilder(
           key: _formkey,
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 14.w,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             child: SingleChildScrollView(
               child: AnimationLimiter(
                 child: Column(
                   children: [
-                    // GPS Auto-fill button
                     Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton.icon(
@@ -175,14 +172,11 @@ class _AddUpdateAddressLayoutState extends ConsumerState<AddUpdateAddressLayout>
                         ),
                       ),
                     ),
-                    // AnimationConfiguration.toStaggeredList returns a List<Widget>, so we spread it here
                     ...AnimationConfiguration.toStaggeredList(
                       duration: const Duration(milliseconds: 375),
                       childAnimationBuilder: (widget) => SlideAnimation(
                         horizontalOffset: 50.0,
-                        child: FadeInAnimation(
-                          child: widget,
-                        ),
+                        child: FadeInAnimation(child: widget),
                       ),
                       children: [
                         SizedBox(height: 10.h),
@@ -327,64 +321,54 @@ class _AddUpdateAddressLayoutState extends ConsumerState<AddUpdateAddressLayout>
                     ),
                   ],
                 ),
-          height: 85.h,
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20),
-            child: ref.watch(addressControllerProvider)
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : CustomButton(
-                    buttonText: S.of(context).save,
-                    onPressed: () {
-                      if (_formkey.currentState!.validate()) {
-                        final AddAddress address = AddAddress(
-                          addressId: widget.address?.addressId,
-                          name: nameControler.text,
-                          phone: phoneNumController.text,
-                          area: areaController.text,
-                          flatNo: flatNumController.text,
-                          postCode: postalCodeController.text,
-                          addressLine: addressLine1Controller.text,
-                          addressLine2: addressLine2Controller.text,
-                          addressType: addressTag,
-                          isDefault: isDefaultAddress,
-                        );
-                        if (widget.address != null) {
-                          ref
-                              .read(addressControllerProvider.notifier)
-                              .updateAddress(addAddress: address)
-                              .then((response) {
-                            if (response.isSuccess) {
-                              GlobalFunction.showCustomSnackbar(
-                                  message: response.message,
-                                  isSuccess: response.isSuccess);
-                              ref
-                                  .read(addressControllerProvider.notifier)
-                                  .getAddress();
-                              context.nav.pop();
-                            }
-                          });
-                        } else {
-                          ref
-                              .read(addressControllerProvider.notifier)
-                              .addAddress(addAddress: address)
-                              .then((response) {
-                            if (response.isSuccess) {
-                              GlobalFunction.showCustomSnackbar(
-                                  message: response.message,
-                                  isSuccess: response.isSuccess);
-                              ref
-                                  .read(addressControllerProvider.notifier)
-                                  .getAddress();
-                              context.nav.pop();
-                            }
-                          });
-                        }
-                      }
-                    },
-                  ),
+              ),
+            ),
           ),
+        ),
+        bottomNavigationBar: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20),
+          child: ref.watch(addressControllerProvider)
+              ? const Center(child: CircularProgressIndicator())
+              : CustomButton(
+                  buttonText: S.of(context).save,
+                  onPressed: () {
+                    if (_formkey.currentState!.validate()) {
+                      final AddAddress address = AddAddress(
+                        addressId: widget.address?.addressId,
+                        name: nameControler.text,
+                        phone: phoneNumController.text,
+                        area: areaController.text,
+                        flatNo: flatNumController.text,
+                        postCode: postalCodeController.text,
+                        addressLine: addressLine1Controller.text,
+                        addressLine2: addressLine2Controller.text,
+                        addressType: addressTag,
+                        isDefault: isDefaultAddress,
+                      );
+                      if (widget.address != null) {
+                        ref.read(addressControllerProvider.notifier).updateAddress(addAddress: address).then((response) {
+                          if (response.isSuccess) {
+                            GlobalFunction.showCustomSnackbar(
+                                message: response.message,
+                                isSuccess: response.isSuccess);
+                            ref.read(addressControllerProvider.notifier).getAddress();
+                            context.nav.pop();
+                          }
+                        });
+                      } else {
+                        ref.read(addressControllerProvider.notifier).addAddress(addAddress: address).then((response) {
+                          if (response.isSuccess) {
+                            GlobalFunction.showCustomSnackbar(
+                                message: response.message,
+                                isSuccess: response.isSuccess);
+                            ref.read(addressControllerProvider.notifier).getAddress();
+                            context.nav.pop();
+                          }
+                        });
+                      }
+                    }
+                  },
+                ),
         ),
       ),
     );

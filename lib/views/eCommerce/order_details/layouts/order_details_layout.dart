@@ -22,8 +22,7 @@ import 'package:ready_ecommerce/controllers/misc/misc_controller.dart';
 import 'package:ready_ecommerce/gen/assets.gen.dart';
 import 'package:ready_ecommerce/generated/l10n.dart';
 import 'package:ready_ecommerce/models/eCommerce/order/order_details_model.dart';
-import 'package:ready_ecommerce/models/eCommerce/shop_message_model/shop.dart'
-    as shop;
+import 'package:ready_ecommerce/models/eCommerce/shop_message_model/shop.dart';
 import 'package:ready_ecommerce/routes.dart';
 import 'package:ready_ecommerce/services/common/hive_service_provider.dart';
 import 'package:ready_ecommerce/utils/context_less_navigation.dart';
@@ -107,18 +106,21 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
         builder: (context, ref, _) {
           final asyncValue = ref.watch(orderDetailsControllerProvider(widget.orderId));
           return asyncValue.when(
-            data: (orderDetails) =>
-                orderDetails.data.order.orderStatus.toLowerCase() != 'cancelled' &&
-                        orderDetails.data.order.orderStatus.toLowerCase() != 'confirm' &&
-                        orderDetails.data.order.orderStatus.toLowerCase() != 'processing' &&
-                        orderDetails.data.order.orderStatus.toLowerCase() != 'on the way'
-                    ? _buildBottomNavigationWidget(
-                        context: context,
-                        orderId: orderDetails.data.order.id,
-                        orderStatus: orderDetails.data.order.orderStatus,
-                      )
-                    : null,
-            error: (error, s) => null,
+            data: (orderDetails) {
+              if (orderDetails.data.order.orderStatus.toLowerCase() != 'cancelled' &&
+                  orderDetails.data.order.orderStatus.toLowerCase() != 'confirm' &&
+                  orderDetails.data.order.orderStatus.toLowerCase() != 'processing' &&
+                  orderDetails.data.order.orderStatus.toLowerCase() != 'on the way') {
+                return _buildBottomNavigationWidget(
+                  context: context,
+                  orderId: orderDetails.data.order.id,
+                  orderStatus: orderDetails.data.order.orderStatus,
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            error: (error, s) => const SizedBox.shrink(),
             loading: () => const SizedBox(),
           );
         },
