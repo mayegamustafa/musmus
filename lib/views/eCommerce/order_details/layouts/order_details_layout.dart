@@ -126,13 +126,19 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
           final asyncValue =
               ref.watch(orderDetailsControllerProvider(widget.orderId));
           return asyncValue.when(
+            error: (error, stackTrace) => Center(
+              child: Text('Error: ${error.toString()}'),
+            ),
+            loading: () => const Center(
+              child: CircularProgressIndicator(),
+            ),
             data: (orderDetails) {
               final order = orderDetails.data.order;
               final int? driverId = order.toJson()['driver_id'] as int?;
               final double customerLat = double.tryParse(order.address.latitude ?? '') ?? 0.0;
               final double customerLng = double.tryParse(order.address.longitude ?? '') ?? 0.0;
               final String? driverName = order.toJson()['driver_name'] as String?;
-            error: (error, stackTrace) => Center(
+              final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
               child: Text('Error: ${error.toString()}'),
             ),
               final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
@@ -230,12 +236,6 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                   )
                 ],
               ),
-            ),
-            error: ((error, stackTrace) => Center(
-                  child: Text(error.toString()),
-                )),
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
             ),
           );
         },
