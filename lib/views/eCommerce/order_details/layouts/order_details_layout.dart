@@ -139,9 +139,6 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
               final double customerLng = double.tryParse(order.address.longitude ?? '') ?? 0.0;
               final String? driverName = order.toJson()['driver_name'] as String?;
               final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
-              child: Text('Error: ${error.toString()}'),
-            ),
-              final String? driverPhotoUrl = order.toJson()['driver_photo_url'] as String?;
               final String? driverVehicle = order.toJson()['driver_vehicle'] as String?;
               final String? eta = order.toJson()['eta'] as String?;
               return SingleChildScrollView(
@@ -175,8 +172,8 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                   Gap(8.h),
                   _buildServiceItemsWidget(
                     context,
-                    orderDetails.data.order.products,
-                    orderDetails.data.order.orderStatus,
+                    order.products,
+                    order.orderStatus,
                   ),
                   Gap(8.h),
                   _buildShopCardWidget(
@@ -187,7 +184,7 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                     padding:
                         EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
                     child: AddressCard(
-                      address: orderDetails.data.order.address,
+                      address: order.address,
                       cardColor: GlobalFunction.getContainerColor(),
                     ),
                   ),
@@ -197,8 +194,8 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                   Gap(8.h),
                   Visibility(
                     visible:
-                        orderDetails.data.order.paymentStatus == 'Pending' &&
-                            orderDetails.data.order.paymentMethod ==
+                        order.paymentStatus == 'Pending' &&
+                            order.paymentMethod ==
                                 'Online Payment',
                     child: Column(
                       children: [
