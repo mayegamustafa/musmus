@@ -22,7 +22,7 @@ import 'package:ready_ecommerce/controllers/misc/misc_controller.dart';
 import 'package:ready_ecommerce/gen/assets.gen.dart';
 import 'package:ready_ecommerce/generated/l10n.dart';
 import 'package:ready_ecommerce/models/eCommerce/order/order_details_model.dart';
-import 'package:ready_ecommerce/models/eCommerce/shop_message_model/shop.dart';
+import 'package:ready_ecommerce/models/eCommerce/shop_message_model/shop.dart' as shop_model;
 import 'package:ready_ecommerce/routes.dart';
 import 'package:ready_ecommerce/services/common/hive_service_provider.dart';
 import 'package:ready_ecommerce/utils/context_less_navigation.dart';
@@ -378,7 +378,7 @@ class _OrderDetailsLayoutState extends ConsumerState<OrderDetailsLayout> {
                 onTap: () async {
                   final saveUser =
                       await ref.read(hiveServiceProvider).getUserInfo();
-                  final shopModel = shop.Shop(
+                  final shopModel = shop_model.Shop(
                     id: orderDetails.data.order.shop.id,
                     name: orderDetails.data.order.shop.name,
                     logo: orderDetails.data.order.shop.logo,
